@@ -5,22 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="81acd396-afab-47f8-a40c-c0f94d5899df" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/jpa-buddy.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/ma/youcode/App.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/ma/youcode/entities/Book.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/ma/youcode/entities/Borrowing.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/ma/youcode/entities/Report.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/ma/youcode/menu/MainMenu.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/ma/youcode/services/BookService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/ma/youcode/services/BorrowingService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/ma/youcode/AppTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ma/youcode/config/Database.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ma/youcode/entities/BookCopy.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ma/youcode/entities/Borrower.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ma/youcode/utils/Components.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ma/youcode/App.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ma/youcode/App.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ma/youcode/entities/Book.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ma/youcode/entities/Book.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ma/youcode/entities/Borrowing.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ma/youcode/entities/Borrowing.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ma/youcode/menu/MainMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ma/youcode/menu/MainMenu.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ma/youcode/services/BookService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ma/youcode/services/BookService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -30,6 +25,7 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="Record" />
         <option value="Class" />
       </list>
     </option>
@@ -48,19 +44,20 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_ADD_EXTERNAL_FILES": "true",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
       <recent name="ma.youcode.entities" />
@@ -113,7 +110,10 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1693392066734</updated>
-      <workItem from="1693392068935" duration="9848000" />
+      <workItem from="1693392068935" duration="11615000" />
+      <workItem from="1693474312538" duration="609000" />
+      <workItem from="1693477590597" duration="8891000" />
+      <workItem from="1693558710843" duration="10291000" />
     </task>
     <servers />
   </component>

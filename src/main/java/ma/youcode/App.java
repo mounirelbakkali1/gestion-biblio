@@ -1,17 +1,21 @@
 package ma.youcode;
 
 
+import ma.youcode.entities.Book;
 import ma.youcode.menu.MainMenu;
 import ma.youcode.services.BookService;
+import ma.youcode.utils.Components;
 
-import java.util.Scanner;
+import java.util.*;
 
 public class App
 {
-    final static String N ="-".repeat(30);
     public static void main( String[] args ){
+        lunch();
+    }
 
-        showHeader();
+    public static void lunch(){
+        Components.Header();
         MainMenu menu = new MainMenu();
         BookService bookService = BookService.getInstance();
         menu.showMenu();
@@ -21,40 +25,25 @@ public class App
             System.out.println("enter choice : ");
             choice = sc.nextLine();
             if(!menu.inMenu(choice)) choice = "";
-            switch (choice) {
-                case "1" -> bookService.findAllBooks();
-                case "2" -> bookService.findAvailableBooks();
-                case "3" -> bookService.findBorrowedBooks();
-                case "4" -> bookService.searchBooks();
-                default -> bookService.findAllBooks();
+            try{
+                switch (choice) {
+                    case "1" -> bookService.findAllBooks();
+                    case "2" -> bookService.findAvailableBooks();
+                    case "3" -> bookService.findBorrowedBooks();
+                    case "4" -> bookService.searchBooks();
+                    case "5" -> bookService.addBook();
+                    case "6" -> bookService.updateBook();
+                    case "7" -> bookService.deleteBook();
+                    case "8" -> bookService.generateReport();
+                    default -> System.out.println("[retry]");
+                }
+            }finally {
+                System.out.println("[enter] return ");
+                choice = sc.nextLine();
+                if(choice.equals("")) lunch();
             }
         }
-        clearConsole();
-        showHeader();
+        Components.Footer();
     }
-    public static void showHeader(){
-        System.out.println(N);
-        System.out.println("    Gestion de biblio     ");
-        System.out.println(N);
-    }
-    public final static void clearConsole()
-    {
-        try
-        {
-            final String os = System.getProperty("os.name");
 
-            if (os.contains("Windows"))
-            {
-                Runtime.getRuntime().exec("cls");
-            }
-            else
-            {
-                Runtime.getRuntime().exec("clear");
-            }
-        }
-        catch (final Exception e)
-        {
-            //  Handle any exceptions.
-        }
-    }
 }

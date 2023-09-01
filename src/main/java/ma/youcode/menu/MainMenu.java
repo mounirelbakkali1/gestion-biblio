@@ -8,7 +8,7 @@ public class MainMenu {
 
     public void showMenu() {
         for (Map.Entry<String,String> option : options.entrySet()){
-            System.out.println("\t"+option.getKey() + " : \t" + option.getValue());
+            System.out.println(option.getKey() + " : \t" + option.getValue());
         }
     }
 
@@ -25,5 +25,6 @@ public class MainMenu {
         options.put("6","update book");
         options.put("7","delete book");
         options.put("8","get report");
+        options.put("9","exit");
     }
 }
