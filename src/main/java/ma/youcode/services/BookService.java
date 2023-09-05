@@ -1,14 +1,19 @@
 package ma.youcode.services;
 
 import ma.youcode.config.Database;
+import ma.youcode.entities.Author;
 import ma.youcode.entities.Book;
 import ma.youcode.entities.BookCopy;
+import ma.youcode.entities.BookReport;
+import ma.youcode.utils.BookFactory;
 import ma.youcode.utils.Components;
+import ma.youcode.utils.Printer;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
 
 public class BookService {
@@ -29,33 +34,28 @@ public class BookService {
         return instance;
     }
 
-    public void findAllBooks() {
-        Components.Header();
-        System.out.println("List of books : ");
+    private List<Book> findAllBooks() {
         List<Book> books = new ArrayList<>();
-        String query = """
-                SELECT books.*,COUNT(copies.ref) AS copies FROM books
-                    left JOIN copies ON copies.isbn = books.isbn
-                    GROUP BY books.isbn
-                """;
+        String query = "CALL findAllBooks()";
         try (Connection connection = Database.getConnection();
                 var preparedStatement = connection.prepareStatement(query);
                 var resultSet = preparedStatement.executeQuery(query);) {
-            while (resultSet.next()) {
-                Book book = new Book();
-                book.setIsbn(resultSet.getString("isbn"));
-                book.setTitle(resultSet.getString("title"));
-                book.setAuthor(resultSet.getString("author"));
-                book.setCopies(resultSet.getInt("copies"));
-                books.add(book);
-            }
-
+            books.addAll(BookFactory.tooBookList(resultSet));
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        books.forEach(book -> printBook(book));
+        // update cache
         booksList.clear();
         booksList.addAll(books);
+        return books;
+
+    }
+
+    public void showAllBooks() {
+        Components.Header();
+        System.out.println("List of books : ");
+        var books = findAllBooks();
+        books.forEach(Printer::printBook);
     }
 
     public void addBook() {
@@ -66,22 +66,46 @@ public class BookService {
         System.out.println("[book title] : ");
         newBook.setTitle(sc.nextLine());
         System.out.println("[book author] : ");
-        newBook.setAuthor(sc.nextLine());
+        newBook.setAuthor(new Author(0, sc.nextLine()));
         System.out.println("[book isbn] : ");
         newBook.setIsbn(sc.nextLine());
         System.out.println("[copies] : ");
         numberOfCopies = sc.nextInt();
-        if (isValidInput(newBook)) {
+        newBook.setCopies(numberOfCopies);
+        if (newBook.isValidInputs()) {
             System.out.println("[!] : All fields are required .");
+            addBook();
+        } else if (!hasUniqueIsbn(newBook.getIsbn())) {
+            System.out.println("[!] : isbn must be unique .");
             addBook();
         }
         try {
-            newBook.save(numberOfCopies);
+            newBook.save();
             System.out.println("[+] : Book added successfully .");
         } catch (SQLException e) {
             System.out.println("[!] : " + e.getMessage());
         }
 
+    }
+
+    private boolean hasUniqueIsbn(String isbn) {
+        boolean isUnique = false;
+        if (!booksList.isEmpty())
+            isUnique = booksList.stream().anyMatch(book -> book.getIsbn().equals(isbn));
+        else {
+            String query = "SELECT `isUniqueIsbn`(?)";
+            try (Connection connection = Database.getConnection();
+                    var preparedStatement = connection.prepareStatement(query);) {
+                preparedStatement.setString(1, isbn);
+                var resultSet = preparedStatement.executeQuery();
+                if (resultSet.next()) {
+                    isUnique = resultSet.getBoolean(1);
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return isUnique;
     }
 
     public void updateBook() {
@@ -92,7 +116,7 @@ public class BookService {
             System.out.println("[!] : isbn is required .");
             updateBook();
         }
-        boolean anyMatch = booksList.stream().anyMatch(book -> book.getIsbn().equals(isbn));
+        boolean anyMatch = findBookByIsbn(isbn).isPresent();
         if (!anyMatch) {
             System.out.println("[!] : Book not found .");
         } else {
@@ -101,10 +125,10 @@ public class BookService {
             System.out.println("[book title] : ");
             book.setTitle(sc.nextLine());
             System.out.println("[book author] : ");
-            book.setAuthor(sc.nextLine());
+            book.setAuthor(new Author(0, sc.nextLine()));
             System.out.println("[book isbn] : ");
             book.setIsbn(sc.nextLine());
-            if (isValidInput(book)) {
+            if (book.isValidInputs()) {
                 System.out.println("[!] : All fields are required .");
                 updateBook();
             }
@@ -117,6 +141,22 @@ public class BookService {
 
         }
 
+    }
+
+    public Optional<Book> findBookByIsbn(String isbn) {
+        if (!booksList.isEmpty()) {
+            return booksList.stream().filter(book -> book.getIsbn().equals(isbn)).findFirst();
+        }
+        String query = "CALL findBookByIsbn(?)";
+        try (Connection connection = Database.getConnection();
+                var preparedStatement = connection.prepareStatement(query);) {
+            preparedStatement.setString(1, isbn);
+            var resultSet = preparedStatement.executeQuery();
+            return BookFactory.tooBookList(resultSet).stream().findFirst();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return Optional.empty();
     }
 
     public void deleteBook() {
@@ -141,78 +181,55 @@ public class BookService {
         }
     }
 
-    public void findBooks() {
-
-    }
-
     public List<Book> findAvailableBooks() {
-        return List.of();
+        return new ArrayList<>();
     }
 
     public List<Book> findBorrowedBooks() {
-        return List.of();
+        return new ArrayList<>();
     }
 
     public void searchBooks() {
         Components.Header();
         System.out.println("Enter book title or author : ");
         String search = sc.nextLine().toLowerCase();
-        booksList.stream()
-                .filter(book -> book.getTitle().toLowerCase().contains(search)
-                        || book.getAuthor().toLowerCase().contains(search))
-                .forEach(book -> printBook(book));
-    }
-
-    public void generateReport() {
-        Components.Header();
-        String query = """
-                SELECT
-                    books.*,
-                    COUNT(copies.ref) AS copies,
-                    SUM(CASE WHEN copies.`status` = 'AVAILABLE' THEN 1 ELSE 0 END) AS available,
-                    SUM(CASE WHEN copies.`status` = 'BORROWED' THEN 1 ELSE 0 END) AS borrowed,
-                    SUM(CASE WHEN borrowing.date_of_returning < NOW() THEN 1 ELSE 0 END) AS lost
-                FROM
-                    books
-                LEFT JOIN
-                    copies ON copies.isbn = books.isbn
-                LEFT JOIN
-                    borrowing ON borrowing.book_ref = books.isbn
-                GROUP BY
-                    books.isbn;
-                                """;
-
-        try (Connection connection = Database.getConnection();
-                var preparedStatement = connection.prepareStatement(query);
-                var resultSet = preparedStatement.executeQuery(query);) {
-            System.out.println("""
-                    [+] : Report generated successfully .
-                                            """);
-            while (resultSet.next()) {
-                // print data here
-                System.out.println("====================================");
-                System.out.println("[ISBN]   : " + resultSet.getString("isbn"));
-                System.out.println("[copies] : " + resultSet.getInt("copies"));
-                System.out.println("[available] : " + resultSet.getInt("available"));
-                System.out.println("[borrowed] : " + resultSet.getInt("borrowed"));
-                System.out.println("[lost] : " + resultSet.getInt("lost"));
-                System.out.println("====================================");
+        if (!booksList.isEmpty()) {
+            booksList.stream()
+                    .filter(book -> book.getTitle().toLowerCase().contains(search)
+                            || book.getAuthor().name().toLowerCase().contains(search))
+                    .forEach(Printer::printBook);
+        } else {
+            String query = "CALL findBooksByTitleOrAuthor(?)";
+            try (Connection connection = Database.getConnection();
+                    var preparedStatement = connection.prepareStatement(query);) {
+                preparedStatement.setString(1, search);
+                var resultSet = preparedStatement.executeQuery();
+                List<Book> books = BookFactory.tooBookList(resultSet);
+                System.out.println(books.size());
+                books
+                        .forEach(Printer::printBook);
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
-        } catch (SQLException e) {
         }
     }
 
-    private boolean isValidInput(Book book) {
-        return book.getTitle().isEmpty() || book.getTitle().isBlank() ||
-                book.getAuthor().isEmpty() || book.getAuthor().isBlank() ||
-                book.getIsbn().isEmpty() || book.getIsbn().isBlank();
+    public List<BookReport> generateReport() {
+        String query = "CALL generateReport()";
+        try (Connection connection = Database.getConnection();
+                var preparedStatement = connection.prepareStatement(query);
+                var resultSet = preparedStatement.executeQuery(query);) {
+            return BookFactory.toBookReport(resultSet);
+        } catch (SQLException ignored) {
+        }
+        return List.of();
     }
 
-    private void printBook(Book book) {
-        System.out.println("[ISBN]   : " + book.getIsbn());
-        System.out.println("[Title]  : " + book.getTitle());
-        System.out.println("[Author] : " + book.getAuthor());
-        System.out.println("[copies] : " + book.getCopies());
-        System.out.println("====================================");
+    public void showStatistics() {
+        Components.Header();
+        generateReport().forEach(Printer::printBookReport);
+        System.out.println("""
+                [+] : Report generated successfully .
+                                        """);
     }
 }

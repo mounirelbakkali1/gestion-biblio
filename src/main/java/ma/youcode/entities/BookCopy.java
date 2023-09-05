@@ -1,14 +1,16 @@
 package ma.youcode.entities;
 
-public class BookCopy extends Book{
-    int ref ;
+public class BookCopy extends Book {
+    int ref;
     BookStatus status;
-    BookCopy(int ref , String isbn, String title, String author, BookStatus status) {
+
+    BookCopy(int ref, String isbn, String title, Author author, BookStatus status) {
         super(isbn, title, author);
-        this.ref = ref ;
+        this.ref = ref;
         this.status = status;
     }
-    BookCopy(String isbn, String title, String author, BookStatus status) {
+
+    BookCopy(String isbn, String title, Author author, BookStatus status) {
         super(isbn, title, author);
         this.status = status;
     }

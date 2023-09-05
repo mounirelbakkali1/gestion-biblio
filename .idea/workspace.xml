@@ -5,17 +5,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="81acd396-afab-47f8-a40c-c0f94d5899df" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/ma/youcode/config/Database.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/ma/youcode/entities/BookCopy.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/ma/youcode/entities/Borrower.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/ma/youcode/utils/Components.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sql/schema.sql" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ma/youcode/entities/Author.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/ma/youcode/entities/BookStatus.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ma/youcode/App.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ma/youcode/App.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ma/youcode/config/Database.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ma/youcode/config/Database.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ma/youcode/entities/Book.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ma/youcode/entities/Book.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ma/youcode/entities/BookCopy.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ma/youcode/entities/BookCopy.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ma/youcode/entities/Borrowing.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ma/youcode/entities/Borrowing.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ma/youcode/menu/MainMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ma/youcode/menu/MainMenu.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ma/youcode/entities/Report.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ma/youcode/entities/Report.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ma/youcode/services/BookService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ma/youcode/services/BookService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ma/youcode/services/BorrowingService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ma/youcode/services/BorrowingService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/ma/youcode/AppTest.java" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -55,7 +57,8 @@
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.keymap&quot;
   }
 }</component>
   <component name="RecentsManager">
@@ -95,12 +98,32 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
-      <option name="TEST_OBJECT" value="class" />
+    <configuration name="App" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="ma.youcode.App" />
+      <module name="GestionBiblio" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="ma.youcode.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration default="true" type="ArquillianTestNG" factoryName="" nameIsGenerated="true">
+      <option name="TEST_OBJECT" value="CLASS" />
+      <properties />
+      <listeners />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.App" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -113,7 +136,10 @@
       <workItem from="1693392068935" duration="11615000" />
       <workItem from="1693474312538" duration="609000" />
       <workItem from="1693477590597" duration="8891000" />
-      <workItem from="1693558710843" duration="10291000" />
+      <workItem from="1693558710843" duration="10630000" />
+      <workItem from="1693667937380" duration="1176000" />
+      <workItem from="1693814229553" duration="8181000" />
+      <workItem from="1693919664654" duration="9806000" />
     </task>
     <servers />
   </component>
@@ -133,5 +159,101 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/ma/youcode/services/BookService.java</url>
+          <line>195</line>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/ma/youcode/services/BookService.java</url>
+          <line>201</line>
+          <option name="timeStamp" value="6" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/ma/youcode/services/BookService.java</url>
+          <line>205</line>
+          <option name="timeStamp" value="8" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/ma/youcode/services/BookService.java</url>
+          <line>208</line>
+          <option name="timeStamp" value="10" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/ma/youcode/services/BookService.java</url>
+          <line>207</line>
+          <option name="timeStamp" value="12" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/ma/youcode/services/BookService.java</url>
+          <line>37</line>
+          <option name="timeStamp" value="13" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/ma/youcode/services/BookService.java</url>
+          <line>39</line>
+          <option name="timeStamp" value="14" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/ma/youcode/services/BookService.java</url>
+          <line>40</line>
+          <option name="timeStamp" value="15" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/ma/youcode/services/BookService.java</url>
+          <line>42</line>
+          <option name="timeStamp" value="16" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/ma/youcode/services/BookService.java</url>
+          <line>43</line>
+          <option name="timeStamp" value="17" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/ma/youcode/services/BookService.java</url>
+          <line>48</line>
+          <option name="timeStamp" value="19" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/ma/youcode/services/BookService.java</url>
+          <line>49</line>
+          <option name="timeStamp" value="20" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/ma/youcode/services/BookService.java</url>
+          <line>55</line>
+          <option name="timeStamp" value="21" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/ma/youcode/services/BookService.java</url>
+          <line>56</line>
+          <option name="timeStamp" value="22" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/ma/youcode/services/BookService.java</url>
+          <line>57</line>
+          <option name="timeStamp" value="23" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/ma/youcode/utils/BookFactory.java</url>
+          <line>22</line>
+          <option name="timeStamp" value="24" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/ma/youcode/utils/BookFactory.java</url>
+          <line>17</line>
+          <option name="timeStamp" value="25" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/ma/youcode/utils/BookFactory.java</url>
+          <line>16</line>
+          <option name="timeStamp" value="26" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

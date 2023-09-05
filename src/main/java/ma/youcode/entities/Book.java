@@ -9,10 +9,10 @@ import ma.youcode.config.Database;
 public class Book {
     private String isbn;
     private String title;
-    private String author;
-    private int copies ;
+    private Author author;
+    private int copies;
 
-    Book(String isbn, String title, String author) {
+    Book(String isbn, String title, Author author) {
         this.isbn = isbn;
         this.title = title;
         this.author = author;
@@ -29,32 +29,28 @@ public class Book {
         this.copies = copies;
     }
 
-    public void save(int numberOfCopies) throws SQLException {
-        String query = "INSERT INTO books (isbn, title, author) VALUES (?, ?, ?)";
-        String query2 = "INSERT INTO copies (isbn) VALUES (?)";
+    public void save() throws SQLException {
+        String query = "CALL saveBook(?,?,?,?);";
         try (Connection connection = Database.getConnection();
-                PreparedStatement preparedStatement = connection.prepareStatement(query);
-                PreparedStatement preparedStatement2 = connection.prepareStatement(query2);) {
+                PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, this.isbn);
             preparedStatement.setString(2, this.title);
-            preparedStatement.setString(3, this.author);
+            preparedStatement.setString(3, this.author.name());
+            preparedStatement.setInt(4, this.copies);
             preparedStatement.executeUpdate();
-            for (int i = 0; i < numberOfCopies; i++) {
-                preparedStatement2.setString(1, this.isbn);
-                preparedStatement2.execute();
-            }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
     }
 
     public void update() throws SQLException {
-        String query = "UPDATE books SET title = ?, author = ? WHERE isbn = ?";
+        String query = "call updateBook(?,?,?,?);";
         try (Connection connection = Database.getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(query);) {
             preparedStatement.setString(1, this.title);
-            preparedStatement.setString(2, this.author);
-            preparedStatement.setString(3, this.isbn);
+            preparedStatement.setString(2, this.author.name());
+            preparedStatement.setInt(3, this.copies);
+            preparedStatement.setString(4, this.isbn);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -62,7 +58,7 @@ public class Book {
     }
 
     public void delete() throws SQLException {
-        String query = "DELETE FROM books WHERE isbn = ?";
+        String query = "call deleteBook(?);";
         try (Connection connection = Database.getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(query);) {
             preparedStatement.setString(1, this.isbn);
@@ -85,20 +81,30 @@ public class Book {
     }
 
     public void setTitle(String title) {
-        // if(title=="" || title==null) throw new IllegalArgumentException("[!] : title
-        // should not be empty .");
         this.title = title;
     }
 
-    public String getAuthor() {
+    public Author getAuthor() {
         return author;
     }
 
-    public void setAuthor(String author) {
+    public void setAuthor(Author author) {
         this.author = author;
     }
-}
 
-enum BookStatus {
-    AVAILABLE, BORROWED
+    public boolean isValidInputs() {
+        return !title.isEmpty() || !title.isBlank() ||
+                !author.name().isEmpty() || !author.name().isBlank() ||
+                !isbn.isEmpty() || !isbn.isBlank();
+    }
+
+    @Override
+    public String toString() {
+        return "Book{" +
+                "isbn='" + isbn + '\'' +
+                ", title='" + title + '\'' +
+                ", author=" + author.name() +
+                ", copies=" + copies +
+                '}';
+    }
 }
