@@ -3,23 +3,23 @@ package ma.youcode.services;
 import ma.youcode.config.Database;
 import ma.youcode.entities.Author;
 import ma.youcode.entities.Book;
-import ma.youcode.entities.BookCopy;
 import ma.youcode.entities.BookReport;
 import ma.youcode.utils.BookFactory;
 import ma.youcode.utils.Components;
 import ma.youcode.utils.Printer;
+import ma.youcode.utils.Reader;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Optional;
-import java.util.Scanner;
 
 public class BookService {
 
     private static List<Book> booksList = new ArrayList<>();
-    private static final Scanner sc = new Scanner(System.in);
+    private static String ERROR_MESSAGE = null;
 
     private static BookService instance;
 
@@ -51,8 +51,9 @@ public class BookService {
 
     }
 
-    public void showAllBooks() {
+    public void showBooks() {
         Components.Header();
+
         System.out.println("List of books : ");
         var books = findAllBooks();
         books.forEach(Printer::printBook);
@@ -60,23 +61,21 @@ public class BookService {
 
     public void addBook() {
         Components.Header();
+        if (ERROR_MESSAGE != null) {
+            System.out.println(ERROR_MESSAGE);
+            ERROR_MESSAGE = null;
+        }
         Book newBook = new Book();
-        int numberOfCopies;
         System.out.println("Enter book information  :");
-        System.out.println("[book title] : ");
-        newBook.setTitle(sc.nextLine());
-        System.out.println("[book author] : ");
-        newBook.setAuthor(new Author(0, sc.nextLine()));
-        System.out.println("[book isbn] : ");
-        newBook.setIsbn(sc.nextLine());
-        System.out.println("[copies] : ");
-        numberOfCopies = sc.nextInt();
-        newBook.setCopies(numberOfCopies);
-        if (newBook.isValidInputs()) {
-            System.out.println("[!] : All fields are required .");
+        newBook.setTitle(Reader.readString("[book title] : ", false));
+        newBook.setAuthor(new Author(0, Reader.readString("[book author] : ", false)));
+        newBook.setIsbn(Reader.readString("[book isbn] : ", false));
+        newBook.setCopies(Reader.readInt("[copies] : ", false));
+        if (!newBook.isValidInputs()) {
+            ERROR_MESSAGE = "[!] : All fields are required .";
             addBook();
         } else if (!hasUniqueIsbn(newBook.getIsbn())) {
-            System.out.println("[!] : isbn must be unique .");
+            ERROR_MESSAGE = "[!] : isbn must be unique .";
             addBook();
         }
         try {
@@ -110,33 +109,30 @@ public class BookService {
 
     public void updateBook() {
         Components.Header();
-        System.out.println("Enter isbn of the book to update : ");
-        String isbn = sc.nextLine();
-        if (isbn.isEmpty() || isbn.isBlank()) {
-            System.out.println("[!] : isbn is required .");
-            updateBook();
+        if (ERROR_MESSAGE != null) {
+            System.out.println(ERROR_MESSAGE);
+            ERROR_MESSAGE = null;
         }
+        String isbn = Reader.readString("Enter isbn of the book to update : ", false);
         boolean anyMatch = findBookByIsbn(isbn).isPresent();
         if (!anyMatch) {
-            System.out.println("[!] : Book not found .");
+            ERROR_MESSAGE = "[!] : Book not found .";
+            updateBook();
         } else {
             Book book = booksList.stream().filter(b -> b.getIsbn().equals(isbn)).findFirst().get();
-            System.out.println("Enter new book information : ");
-            System.out.println("[book title] : ");
-            book.setTitle(sc.nextLine());
-            System.out.println("[book author] : ");
-            book.setAuthor(new Author(0, sc.nextLine()));
-            System.out.println("[book isbn] : ");
-            book.setIsbn(sc.nextLine());
-            if (book.isValidInputs()) {
-                System.out.println("[!] : All fields are required .");
-                updateBook();
-            }
+            System.out.println("[[ Enter updated book information ]]");
+            String title = Reader.readString("[book title (" + book.getTitle() + ")] : ", true);
+            book.setTitle(title.isEmpty() ? book.getTitle() : title);
+            String authorName = Reader.readString("[book author (" + book.getAuthor().name() + ")] : ", true);
+            book.setAuthor(new Author(0, authorName.isEmpty() ? book.getAuthor().name() : authorName));
+            int copies = Reader.readInt("[number of copies] (" + book.getCopies() + "): ", true);
+            book.setCopies(copies == 0 ? book.getCopies() : copies);
             try {
                 book.update();
                 System.out.println("[+] : Book updated successfully .");
             } catch (SQLException e) {
-                System.out.println("[!] : " + e.getMessage());
+                ERROR_MESSAGE = "[!] : " + e.getMessage();
+                updateBook();
             }
 
         }
@@ -161,22 +157,23 @@ public class BookService {
 
     public void deleteBook() {
         Components.Header();
-        System.out.println("Enter isbn of the book to delete : ");
-        String isbn = sc.nextLine();
-        if (isbn.isEmpty() || isbn.isBlank()) {
-            System.out.println("[!] : isbn is required .");
-            deleteBook();
+        if (ERROR_MESSAGE != null) {
+            System.out.println(ERROR_MESSAGE);
+            ERROR_MESSAGE = null;
         }
+        String isbn = Reader.readString("Enter isbn of the book to delete : ", false);
         boolean anyMatch = booksList.stream().anyMatch(book -> book.getIsbn().equals(isbn));
         if (!anyMatch) {
-            System.out.println("[!] : Book not found .");
+            ERROR_MESSAGE = "[!] : Book not found .";
+            deleteBook();
         } else {
             Book book = booksList.stream().filter(b -> b.getIsbn().equals(isbn)).findFirst().get();
             try {
                 book.delete();
                 System.out.println("[+] : Book deleted successfully .");
             } catch (SQLException e) {
-                System.out.println("[!] : " + e.getMessage());
+                ERROR_MESSAGE = "[!] : " + e.getMessage();
+                deleteBook();
             }
         }
     }
@@ -191,8 +188,7 @@ public class BookService {
 
     public void searchBooks() {
         Components.Header();
-        System.out.println("Enter book title or author : ");
-        String search = sc.nextLine().toLowerCase();
+        String search = Reader.readString("Enter book title or author : ", false);
         if (!booksList.isEmpty()) {
             booksList.stream()
                     .filter(book -> book.getTitle().toLowerCase().contains(search)
@@ -220,7 +216,8 @@ public class BookService {
                 var preparedStatement = connection.prepareStatement(query);
                 var resultSet = preparedStatement.executeQuery(query);) {
             return BookFactory.toBookReport(resultSet);
-        } catch (SQLException ignored) {
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
         }
         return List.of();
     }

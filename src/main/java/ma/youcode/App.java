@@ -2,7 +2,9 @@ package ma.youcode;
 
 import ma.youcode.menu.MainMenu;
 import ma.youcode.services.BookService;
+import ma.youcode.services.BorrowingService;
 import ma.youcode.utils.Components;
+import ma.youcode.utils.Reader;
 
 import java.util.*;
 
@@ -16,18 +18,16 @@ public class App {
         MainMenu menu = new MainMenu();
         BookService bookService = BookService.getInstance();
         menu.showMenu();
-        Scanner sc = new Scanner(System.in);
         String choice = "";
         while (choice.isEmpty()) {
-            System.out.println("enter choice : ");
-            choice = sc.nextLine();
+            choice = Reader.readString("enter choice : ", false);
             if (!menu.inMenu(choice))
                 choice = "";
             try {
                 switch (choice) {
-                    case "1" -> bookService.showAllBooks();
-                    case "2" -> bookService.findAvailableBooks();
-                    case "3" -> bookService.findBorrowedBooks();
+                    case "1" -> bookService.showBooks();
+                    case "2" -> bookService.showStatistics();
+                    case "3" -> BorrowingService.showMenu();
                     case "4" -> bookService.searchBooks();
                     case "5" -> bookService.addBook();
                     case "6" -> bookService.updateBook();
@@ -36,8 +36,7 @@ public class App {
                     default -> System.out.println("[retry]");
                 }
             } finally {
-                System.out.println("[enter] return ");
-                choice = sc.nextLine();
+                choice = Reader.readString("[enter] return ", true);
                 if (choice.equals(""))
                     lunch();
             }

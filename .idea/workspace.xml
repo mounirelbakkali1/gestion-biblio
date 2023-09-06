@@ -5,19 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="81acd396-afab-47f8-a40c-c0f94d5899df" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/sql/schema.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/ma/youcode/entities/Author.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/ma/youcode/entities/BookStatus.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sql/schema.sql" beforeDir="false" afterPath="$PROJECT_DIR$/sql/schema.sql" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ma/youcode/App.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ma/youcode/App.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ma/youcode/config/Database.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ma/youcode/config/Database.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ma/youcode/entities/Book.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ma/youcode/entities/Book.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ma/youcode/entities/BookCopy.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ma/youcode/entities/BookCopy.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ma/youcode/entities/Borrower.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ma/youcode/entities/Borrower.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ma/youcode/entities/Borrowing.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ma/youcode/entities/Borrowing.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ma/youcode/entities/Report.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ma/youcode/entities/Report.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ma/youcode/menu/MainMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ma/youcode/menu/MainMenu.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ma/youcode/services/BookService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ma/youcode/services/BookService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/ma/youcode/services/BorrowingService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ma/youcode/services/BorrowingService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/ma/youcode/AppTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ma/youcode/utils/Printer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ma/youcode/utils/Printer.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -111,10 +107,8 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="ArquillianTestNG" factoryName="" nameIsGenerated="true">
-      <option name="TEST_OBJECT" value="CLASS" />
-      <properties />
-      <listeners />
+    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
+      <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -140,6 +134,7 @@
       <workItem from="1693667937380" duration="1176000" />
       <workItem from="1693814229553" duration="8181000" />
       <workItem from="1693919664654" duration="9806000" />
+      <workItem from="1693989927609" duration="3590000" />
     </task>
     <servers />
   </component>
@@ -165,27 +160,27 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/ma/youcode/services/BookService.java</url>
-          <line>195</line>
+          <line>191</line>
           <option name="timeStamp" value="2" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/ma/youcode/services/BookService.java</url>
-          <line>201</line>
+          <line>197</line>
           <option name="timeStamp" value="6" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/ma/youcode/services/BookService.java</url>
-          <line>205</line>
+          <line>201</line>
           <option name="timeStamp" value="8" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/ma/youcode/services/BookService.java</url>
-          <line>208</line>
+          <line>204</line>
           <option name="timeStamp" value="10" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/ma/youcode/services/BookService.java</url>
-          <line>207</line>
+          <line>203</line>
           <option name="timeStamp" value="12" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
@@ -225,17 +220,17 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/ma/youcode/services/BookService.java</url>
-          <line>55</line>
+          <line>56</line>
           <option name="timeStamp" value="21" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/ma/youcode/services/BookService.java</url>
-          <line>56</line>
+          <line>57</line>
           <option name="timeStamp" value="22" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/ma/youcode/services/BookService.java</url>
-          <line>57</line>
+          <line>58</line>
           <option name="timeStamp" value="23" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
@@ -252,6 +247,36 @@
           <url>file://$PROJECT_DIR$/src/main/java/ma/youcode/utils/BookFactory.java</url>
           <line>16</line>
           <option name="timeStamp" value="26" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/ma/youcode/services/BorrowingService.java</url>
+          <line>58</line>
+          <option name="timeStamp" value="27" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/ma/youcode/services/BorrowingService.java</url>
+          <line>59</line>
+          <option name="timeStamp" value="28" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/ma/youcode/services/BorrowingService.java</url>
+          <line>51</line>
+          <option name="timeStamp" value="29" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/ma/youcode/services/BorrowingService.java</url>
+          <line>53</line>
+          <option name="timeStamp" value="30" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/ma/youcode/services/BorrowingService.java</url>
+          <line>61</line>
+          <option name="timeStamp" value="31" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/ma/youcode/services/BorrowingService.java</url>
+          <line>62</line>
+          <option name="timeStamp" value="32" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
