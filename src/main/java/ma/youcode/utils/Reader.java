@@ -16,22 +16,26 @@ public class Reader {
                 in = sc.nextLine();
             }
         }
-        return in;
+        return in.trim();
     }
 
     public static int readInt(String message, boolean allowZero) {
         System.out.println(message);
-        Scanner sc = new Scanner(System.in);
+
         int in = 0;
-        while (in == 0) {
+        boolean invalid = true;
+        while (invalid) {
+            Scanner sc = new Scanner(System.in);
             try {
                 in = sc.nextInt();
-                if (allowZero && in == 0) {
-                    break;
+                if ((allowZero && in >= 0) || (!allowZero && in > 0)) {
+                    invalid = false;
+                } else {
+                    System.out.println("[invalid input]");
                 }
             } catch (Exception e) {
                 System.out.println("[retry]");
-                readInt(message, allowZero);
+                continue;
             }
         }
         return in;
@@ -41,12 +45,14 @@ public class Reader {
         System.out.println(message);
         Scanner sc = new Scanner(System.in);
         Date in = null;
-        while (in == null) {
+        boolean invalid = true;
+        while (invalid) {
             try {
-                in = Date.valueOf(sc.nextLine());
+                in = Date.valueOf(sc.nextLine().trim());
+                invalid = false;
             } catch (Exception e) {
                 System.out.println("[invalid date format yyyy-mm-dd]");
-                readDate(message);
+                continue;
             }
         }
         return in;

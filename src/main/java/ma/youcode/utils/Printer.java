@@ -1,5 +1,7 @@
 package ma.youcode.utils;
 
+import java.sql.Date;
+
 import ma.youcode.entities.Book;
 import ma.youcode.entities.BookReport;
 
@@ -24,4 +26,16 @@ public class Printer {
         System.out.println("[lost] : " + br.getLost());
         System.out.println("====================================");
     }
+
+    public static void printBorrowingDetails(String isbn, String title, String borrowerName, Date borrowingDate,
+            Date returnDate) {
+        System.out.println("=================Borrowing details===================");
+        System.out.println("book isbn : " + isbn);
+        System.out.println("book title : " + title);
+        System.out.println("borrower name : " + borrowerName);
+        System.out.println("borrowing date : " + borrowingDate);
+        System.out.println("return date : " + returnDate);
+        System.out.println("======================================================");
+    }
+
 }
