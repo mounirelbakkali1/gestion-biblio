@@ -8,7 +8,6 @@ import java.sql.Date;
 import ma.youcode.config.Database;
 
 public class Borrowing {
-    // composition principle
     private BookCopy copy;
     private Borrower borrower;
     private Date date_borrowing;
@@ -17,26 +16,27 @@ public class Borrowing {
     public Borrowing() {
     }
 
-    public Borrowing(int ref, String borrowerName, Date date, Date returnDate) {
+    public Borrowing(int ref, Borrower borrower, Date date, Date returnDate) {
         this.copy = new BookCopy();
         this.copy.setRef(ref);
         this.borrower = new Borrower();
-        this.borrower.setName(borrowerName);
+        this.borrower = borrower;
         this.date_borrowing = date;
         this.return_date = returnDate;
     }
 
-    public void save() {
-        String query = "CALL borrowBook(?,?,?,?);";
+    public void save() throws SQLException {
+        String query = "CALL borrowBook(?,?,?,?,?);";
         try (Connection connection = Database.getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setInt(1, this.copy.getRef());
-            preparedStatement.setString(2, this.borrower.getName());
-            preparedStatement.setDate(3, this.date_borrowing);
-            preparedStatement.setDate(4, this.return_date);
+            preparedStatement.setString(2, this.borrower.getNumMember());
+            preparedStatement.setString(3, this.borrower.getName());
+            preparedStatement.setDate(4, this.date_borrowing);
+            preparedStatement.setDate(5, this.return_date);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("[!] error while borrowing the book (try again)");
+            throw new RuntimeException(e.getMessage());
         }
 
     }

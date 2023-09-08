@@ -4,15 +4,19 @@ public class BookCopy extends Book {
     int ref;
     BookStatus status;
 
-    BookCopy(int ref, String isbn, String title, Author author, BookStatus status) {
+    public BookCopy(int ref, String isbn, String title, Author author, BookStatus status) {
         super(isbn, title, author);
         this.ref = ref;
         this.status = status;
     }
 
-    BookCopy(String isbn, String title, Author author, BookStatus status) {
+    public BookCopy(String isbn, String title, Author author, BookStatus status) {
         super(isbn, title, author);
         this.status = status;
+    }
+
+    public BookCopy(String isbn, String title) {
+        super(isbn, title);
     }
 
     public BookCopy() {

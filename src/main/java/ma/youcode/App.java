@@ -18,7 +18,7 @@ public class App {
         menu.showMenu();
         String choice = "";
         while (choice.isEmpty()) {
-            choice = Reader.readString("enter choice : ", false);
+            choice = Reader.readString("\n", false);
             if (!menu.inMenu(choice))
                 choice = "";
             try {
@@ -34,7 +34,7 @@ public class App {
                     default -> System.out.println("[retry]");
                 }
             } finally {
-                choice = Reader.readString("[enter] return ", true);
+                choice = Reader.readString("[enter] to confirm returning", true);
                 if (choice.equals(""))
                     lunch();
             }

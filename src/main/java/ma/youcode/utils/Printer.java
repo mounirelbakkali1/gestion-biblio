@@ -1,9 +1,11 @@
 package ma.youcode.utils;
 
 import java.sql.Date;
+import java.util.ArrayList;
 
 import ma.youcode.entities.Book;
 import ma.youcode.entities.BookReport;
+import ma.youcode.entities.Borrowing;
 
 public class Printer {
 
@@ -30,12 +32,28 @@ public class Printer {
     public static void printBorrowingDetails(String isbn, String title, String borrowerName, Date borrowingDate,
             Date returnDate) {
         System.out.println("=================Borrowing details===================");
-        System.out.println("book isbn : " + isbn);
-        System.out.println("book title : " + title);
-        System.out.println("borrower name : " + borrowerName);
+        System.out.println("book isbn      : " + isbn);
+        System.out.println("book title     : " + title);
+        System.out.println("memeber number : " + borrowerName);
         System.out.println("borrowing date : " + borrowingDate);
-        System.out.println("return date : " + returnDate);
+        System.out.println("return date    : " + returnDate);
         System.out.println("======================================================");
+    }
+
+    public static void printBorrowedBooks(ArrayList<Borrowing> list) {
+        list.forEach(borrowing -> {
+            var bd = borrowing.getDate_borrowing();
+            var rd = borrowing.getReturn_date();
+            boolean isNotReturned = rd.compareTo(Date.valueOf(java.time.LocalDate.now())) > 0;
+            System.out.println("isbn           : " + borrowing.getCopy().getIsbn());
+            System.out.println("title          : " + borrowing.getCopy().getTitle());
+            System.out.println("borrower       : " + borrowing.getBorrower().getName());
+            System.out.println("memeber num    : " + borrowing.getBorrower().getNumMember());
+            System.out.println("borrowing date : " + bd);
+            System.out.println(
+                    "return date    : " + rd + (isNotReturned ? "                    [!] not returned" : ""));
+            System.out.println("====================================");
+        });
     }
 
 }
