@@ -3,8 +3,10 @@ package ma.youcode.entities;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Optional;
 
 import ma.youcode.config.Database;
+import ma.youcode.utils.BookFactory;
 
 public class Book {
     private String isbn;
@@ -73,6 +75,20 @@ public class Book {
         }
     }
 
+    public static boolean isUniqueIsbn(String isbn) {
+        String query = "SELECT `isUniqueIsbn`(?)";
+        try (Connection connection = Database.getConnection();
+                var preparedStatement = connection.prepareStatement(query);) {
+            preparedStatement.setString(1, isbn);
+            var resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getBoolean(1);
+            }
+        } catch (SQLException e) {
+        }
+        return false;
+    }
+
     public String getIsbn() {
         return isbn;
     }
@@ -101,6 +117,18 @@ public class Book {
         return !title.isEmpty() || !title.isBlank() ||
                 !author.name().isEmpty() || !author.name().isBlank() ||
                 !isbn.isEmpty() || !isbn.isBlank();
+    }
+
+    public static Optional<Book> findBookByIsbn(String isbn) {
+        String query = "CALL findBookByIsbn(?)";
+        try (Connection connection = Database.getConnection();
+                var preparedStatement = connection.prepareStatement(query);) {
+            preparedStatement.setString(1, isbn);
+            var resultSet = preparedStatement.executeQuery();
+            return BookFactory.tooBookList(resultSet).stream().findFirst();
+        } catch (SQLException e) {
+        }
+        return Optional.empty();
     }
 
     @Override

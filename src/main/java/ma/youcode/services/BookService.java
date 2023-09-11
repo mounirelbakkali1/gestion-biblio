@@ -52,7 +52,6 @@ public class BookService {
 
     public void showBooks() {
         Components.Header();
-
         System.out.println("List of books : ");
         var books = findAllBooks();
         books.forEach(Printer::printBook);
@@ -66,7 +65,7 @@ public class BookService {
                 ERROR_MESSAGE = null;
             }
             Book newBook = new Book();
-            System.out.println("Enter book information [-1 to cancel] :");
+            System.out.println("Enter book information :");
             newBook.setTitle(Reader.readString("[book title] : ", false));
             newBook.setAuthor(new Author(0, Reader.readString("[book author] : ", false)));
             newBook.setIsbn(Reader.readString("[book isbn] : ", false));
@@ -93,19 +92,9 @@ public class BookService {
     private boolean hasUniqueIsbn(String isbn) {
         boolean isUnique = false;
         if (!booksList.isEmpty())
-            isUnique = booksList.stream().anyMatch(book -> book.getIsbn().equals(isbn));
+            isUnique = !booksList.stream().anyMatch(book -> book.getIsbn().equals(isbn));
         else {
-            String query = "SELECT `isUniqueIsbn`(?)";
-            try (Connection connection = Database.getConnection();
-                    var preparedStatement = connection.prepareStatement(query);) {
-                preparedStatement.setString(1, isbn);
-                var resultSet = preparedStatement.executeQuery();
-                if (resultSet.next()) {
-                    isUnique = resultSet.getBoolean(1);
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            isUnique = Book.isUniqueIsbn(isbn);
         }
         return isUnique;
     }
@@ -124,19 +113,24 @@ public class BookService {
                 continue;
             } else {
                 Book book = booksList.stream().filter(b -> b.getIsbn().equals(isbn)).findFirst().get();
-                System.out.println("[[ Enter updated book information ]]");
-                System.out.println("-----------[-1 to cancel]-----------");
+                System.out.println("[[ Enter updated book information ]]\n");
                 String title = Reader.readString("[book title (" + book.getTitle() + ")] : ", true);
                 book.setTitle(title.isEmpty() ? book.getTitle() : title);
                 String authorName = Reader.readString("[book author (" + book.getAuthor().name() + ")] : ", true);
                 book.setAuthor(new Author(0, authorName.isEmpty() ? book.getAuthor().name() : authorName));
                 int copies = Reader.readInt("[number of copies] (" + book.getCopies() + "): ", true);
+                if (!canReduceCopies(book, copies)) {
+                    ERROR_MESSAGE = "[!] : couldn't reduce copies  " + getBorrowedCopiesByIsbn(isbn) + "/"
+                            + book.getCopies() + " are borrowed ";
+                    continue;
+                }
                 book.setCopies(copies == 0 ? book.getCopies() : copies);
                 try {
+
                     book.update();
                     System.out.println("[+] : Book updated successfully .");
                     break;
-                } catch (SQLException e) {
+                } catch (Exception e) {
                     ERROR_MESSAGE = "[!] : " + e.getMessage();
                     continue;
                 }
@@ -149,16 +143,9 @@ public class BookService {
     public Optional<Book> findBookByIsbn(String isbn) {
         if (!booksList.isEmpty()) {
             return booksList.stream().filter(book -> book.getIsbn().equals(isbn)).findFirst();
+        } else {
+            return Book.findBookByIsbn(isbn);
         }
-        String query = "CALL findBookByIsbn(?)";
-        try (Connection connection = Database.getConnection();
-                var preparedStatement = connection.prepareStatement(query);) {
-            preparedStatement.setString(1, isbn);
-            var resultSet = preparedStatement.executeQuery();
-            return BookFactory.tooBookList(resultSet).stream().findFirst();
-        } catch (SQLException e) {
-        }
-        return Optional.empty();
     }
 
     public void deleteBook() {
@@ -168,20 +155,17 @@ public class BookService {
                 System.out.println(ERROR_MESSAGE);
                 ERROR_MESSAGE = null;
             }
-            String isbn = Reader.readString("Enter isbn of the book to delete [-1 to cancel] : ", false);
-            boolean anyMatch = findBookByIsbn(isbn).isPresent();
-            if (!anyMatch) {
+            String isbn = Reader.readString("Enter isbn of the book to delete  : ", false);
+            Optional<Book> optional = findBookByIsbn(isbn);
+            if (!optional.isPresent()) {
                 ERROR_MESSAGE = "[!] : Book not found .";
                 continue;
             } else {
-                List<BookReport> report = generateReport();
-                boolean couldBeDeleted = report.stream()
-                        .anyMatch(br -> br.getIsbn().equals(isbn) && br.getBorrowed() == 0);
-                if (!couldBeDeleted) {
+                Book book = optional.get();
+                if (!couldBeDeleted(book)) {
                     ERROR_MESSAGE = "[!] couldn't delete this book [a copy is borrowed]";
                     continue;
                 }
-                Book book = booksList.stream().filter(b -> b.getIsbn().equals(isbn)).findFirst().get();
                 try {
                     book.delete();
                     System.out.println("[+] : Book deleted successfully .");
@@ -194,17 +178,9 @@ public class BookService {
         }
     }
 
-    public List<Book> findAvailableBooks() {
-        return new ArrayList<>();
-    }
-
-    public List<Book> findBorrowedBooks() {
-        return new ArrayList<>();
-    }
-
     public void searchBooks() {
         Components.Header();
-        String search = Reader.readString("Enter book title or author [-1 to cancel] : ", false);
+        String search = Reader.readString("Enter book title or author : ", false);
         if (!booksList.isEmpty()) {
             booksList.stream()
                     .filter(book -> book.getTitle().toLowerCase().contains(search)
@@ -217,13 +193,56 @@ public class BookService {
                 preparedStatement.setString(1, search);
                 var resultSet = preparedStatement.executeQuery();
                 List<Book> books = BookFactory.tooBookList(resultSet);
-                System.out.println(books.size());
                 books
                         .forEach(Printer::printBook);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
+    }
+
+    public void showStatistics() {
+        Components.Header();
+        generateReport().forEach(Printer::printBookReport);
+        System.out.println("""
+                [+] : Report generated successfully .
+                                        """);
+    }
+
+    private boolean canReduceCopies(Book book, int copies) {
+        return getAvailableCopiesByIsbn(book.getIsbn()) >= book.getCopies() - copies;
+    }
+
+    public int getAvailableCopiesByIsbn(String isbn) {
+        return generateReport().stream()
+                .filter(b -> b.getIsbn().equals(isbn))
+                .findFirst()
+                .map(BookReport::getAvailable)
+                .get();
+    }
+
+    public int getBorrowedCopiesByIsbn(String isbn) {
+        return generateReport().stream()
+                .filter(b -> b.getIsbn().equals(isbn))
+                .findFirst()
+                .map(BookReport::getBorrowed)
+                .get();
+    }
+
+    public boolean couldBeDeleted(Book book) {
+        return generateReport().stream()
+                .filter(b -> b.getIsbn().equals(book.getIsbn()))
+                .findFirst()
+                .map(BookReport::getBorrowed)
+                .orElse(0) == book.getCopies();
+    }
+
+    public boolean couldBeBorrowed(String isbn) {
+        return generateReport().stream()
+                .filter(b -> b.getIsbn().equals(isbn))
+                .findFirst()
+                .map(BookReport::getAvailable)
+                .orElse(0) > 0;
     }
 
     public List<BookReport> generateReport() {
@@ -236,13 +255,5 @@ public class BookService {
             System.out.println(e.getMessage());
         }
         return List.of();
-    }
-
-    public void showStatistics() {
-        Components.Header();
-        generateReport().forEach(Printer::printBookReport);
-        System.out.println("""
-                [+] : Report generated successfully .
-                                        """);
     }
 }

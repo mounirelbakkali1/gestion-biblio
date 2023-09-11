@@ -11,14 +11,16 @@ public class Reader {
         System.out.println(message);
         Scanner sc = new Scanner(System.in);
         String in = "";
-        in = sc.nextLine();
-        if (in.trim().equals("-1"))
-            App.lunch();
         if (!allowEmpty) {
             while (in.isEmpty()) {
                 in = sc.nextLine();
             }
+        } else {
+            in = sc.nextLine().trim();
         }
+        if (in.equals("-1"))
+            App.lunch();
+
         return in.trim();
     }
 

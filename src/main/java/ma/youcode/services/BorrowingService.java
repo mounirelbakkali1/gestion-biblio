@@ -1,6 +1,8 @@
 package ma.youcode.services;
 
+import java.sql.Connection;
 import java.sql.Date;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -12,6 +14,7 @@ import ma.youcode.entities.BookCopy;
 import ma.youcode.entities.BookReport;
 import ma.youcode.entities.Borrower;
 import ma.youcode.entities.Borrowing;
+import ma.youcode.utils.BookFactory;
 import ma.youcode.utils.Components;
 import ma.youcode.utils.Printer;
 import ma.youcode.utils.Reader;
@@ -63,7 +66,7 @@ public class BorrowingService {
             while (resultSet.next()) {
                 var borrowing = new Borrowing();
                 borrowing.setCopy(new BookCopy(resultSet.getString("isbn"), resultSet.getString("title")));
-                borrowing.setBorrower(new Borrower(resultSet.getString("borrower"), null));
+                borrowing.setBorrower(new Borrower(resultSet.getString("borrower"), resultSet.getString("numMember")));
                 borrowing.setDate_borrowing(resultSet.getDate("borrowing_date"));
                 borrowing.setReturn_date(resultSet.getDate("return_date"));
                 list.add(borrowing);
@@ -90,13 +93,11 @@ public class BorrowingService {
             if (optionalBook.isEmpty()) {
                 ERROR_MESSAGE = "[!] book not found";
                 continue;
-            }
-            List<BookReport> report = bookService.generateReport();
-            boolean couldBeBorrowed = report.stream()
-                    .anyMatch(br -> br.getIsbn().equals(isbn) && br.getAvailable() > 0);
-            if (!couldBeBorrowed) {
-                ERROR_MESSAGE = "[!] book not available [all copies are borrowed]";
-                continue;
+            } else {
+                if (!bookService.couldBeBorrowed(optionalBook.get().getIsbn())) {
+                    ERROR_MESSAGE = "[!] book not available [all copies are borrowed]";
+                    continue;
+                }
             }
             String memberNum = Reader.readString("enter member num : ", false);
             String borrowerName = Reader.readString("enter borrower name [if new]: ", true);
@@ -105,7 +106,7 @@ public class BorrowingService {
                     .readDate("enter borrowing date [" + Date.valueOf(java.time.LocalDate.now()) + "]: ", true);
             int duration = Reader.readInt("enter borrowing duration [days] : ", false);
             Date returnDate = Date.valueOf(borrowingDate.toLocalDate().plusDays(duration));
-            Printer.printBorrowingDetails(isbn, optionalBook.get().getTitle(), borrowerName, borrowingDate, returnDate);
+            Printer.printBorrowingDetails(isbn, optionalBook.get().getTitle(), memberNum, borrowingDate, returnDate);
             String confirm = Reader.readString("confirm borrowing [y/n] : ", false);
             if (confirm.equals("y")) {
                 int random = getRandomBookRef(isbn);
@@ -186,20 +187,20 @@ public class BorrowingService {
 
     }
 
-    private int getBorrowingDetails(String isbn, String borrowerName) {
+    private int getBorrowingDetails(String isbn, String numMemeber) {
         int ref = 0;
         String query = "call getBorrowingDetails(?,?)";
         try (var connection = Database.getConnection();
                 var preparedStatement = connection.prepareStatement(query);) {
             preparedStatement.setString(1, isbn);
-            preparedStatement.setString(2, borrowerName);
+            preparedStatement.setString(2, numMemeber);
             var resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 ref = resultSet.getInt("book_ref");
                 String title = resultSet.getString("title");
                 Date borrowingDate = resultSet.getDate("borrowing_date");
                 Date returnDate = resultSet.getDate("return_date");
-                Printer.printBorrowingDetails(isbn, title, borrowerName, borrowingDate, returnDate);
+                Printer.printBorrowingDetails(isbn, title, numMemeber, borrowingDate, returnDate);
             }
         } catch (Exception e) {
             System.out.println("[!] error while returning the book copy (try again)");

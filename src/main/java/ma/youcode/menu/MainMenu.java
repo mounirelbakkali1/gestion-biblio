@@ -10,6 +10,7 @@ public class MainMenu {
         for (Map.Entry<String, String> option : options.entrySet()) {
             System.out.println(option.getKey() + " : \t" + option.getValue());
         }
+        System.out.println("\n[*] :  -1 to cancel operation");
     }
 
     public boolean inMenu(String key) {
@@ -24,6 +25,6 @@ public class MainMenu {
         options.put("5", "add book");
         options.put("6", "update book");
         options.put("7", "delete book");
-        options.put("9", "exit");
+        options.put("8", "exit");
     }
 }

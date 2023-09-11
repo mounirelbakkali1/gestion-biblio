@@ -30,17 +30,20 @@ public class App {
                     case "5" -> bookService.addBook();
                     case "6" -> bookService.updateBook();
                     case "7" -> bookService.deleteBook();
-                    case "8" -> bookService.showStatistics();
+                    case "8" -> {
+                        Components.Footer();
+                        System.exit(0);
+                    }
                     default -> System.out.println("[retry]");
                 }
             } finally {
-                choice = Reader.readString("[enter] to confirm returning", true);
+                choice = Reader.readString("[enter] go back", true);
                 if (choice.equals(""))
                     lunch();
             }
 
         }
-        Components.Footer();
+
     }
 
 }
